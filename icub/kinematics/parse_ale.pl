@@ -16,7 +16,7 @@ my %configured;
 $configured{"world"} = 1;
 $applied{"world"} = 1;
 
-print "import kino\n";
+print "from kino import *\n";
 
 while (<>) {
     chomp($_);
@@ -50,9 +50,9 @@ while (<>) {
 	$unit = $2;
 	$unit_chain = "$unit_chain->$1";
 	if ($root) {
-	    print "unit_$unit = kino.create_root(\"$unit\")\n";
+	    print "unit_$unit = create_root(\"$unit\")\n";
 	} else {
-	    print "unit_$unit = kino.create_joint(\"$unit\",unit_$parent)\n";
+	    print "unit_$unit = create_joint(\"$unit\",unit_$parent)\n";
 	}
 	if ($end) {
 	    print "unit_$unit.set_terminal()\n";
