@@ -5,7 +5,9 @@ class BlenderRobot:
         except:
             pass
         try:
-            bpy.context.scene.objects.unlink(bpy.data.objects.get('robot'))
+            army = bpy.data.objects.get('Armature')
+            army.name = "OldArmature"
+            bpy.context.scene.objects.unlink(army)
         except:
             pass
 
@@ -21,27 +23,40 @@ class BlenderRobot:
 
     def addRoot(self,unit):
         print("Add root " + unit.name)
-        bpy.data.armatures.new(unit.name)
-        self.armature = bpy.data.armatures[0]
-        self.robot = bpy.data.objects.new("robot", self.armature)
+        #bpy.data.armatures.new(unit.name)
+        bpy.ops.object.armature_add(enter_editmode=True)
+        #self.armature = bpy.data.armatures[0]
+        print(bpy.data.objects)
+        self.robot = bpy.data.objects['Armature']
+        print(bpy.data.objects)
+        self.armature = self.robot.data
+        #self.robot = bpy.data.objects.new("robot", self.armature)
         self.robot.location.x = 0;
         self.robot.location.y = 0;
-        bpy.context.scene.objects.link(self.robot)
-        bpy.context.scene.update()
+        #bpy.context.scene.objects.link(self.robot)
+        #bpy.context.scene.update()
         bpy.context.scene.update()
         
     def addJoint(self,unit,parent):
         print("Add joint " + unit.name + " with parent " + parent.name)
+        bone = self.armature.edit_bones.new(unit.name)
+        bone.local_location = True
         try:
             parent_bone = self.armature.edit_bones[parent.name]
+            print("Parent found")
+            bone.connected = True
+            bone.length = 1
+            bone.head = parent_bone.tail
+            bone.tail = parent_bone.tail
+            bone.tail.y += 1
+            bone.parent = parent_bone
+            bone.align_orientation(parent_bone)
         except:
             parent_bone = None
-            bpy.context.scene.objects.active = bpy.context.scene.objects['robot']
-        bpy.data.objects['robot'].selected = True
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.mode_set(mode='EDIT')
-        bone = self.armature.edit_bones.new(unit.name)
-        bone.tail.y = 1
+            bone.tail.y = 1
+        #bpy.context.scene.objects.active = bpy.context.scene.objects['robot']
+        #bpy.data.objects['robot'].selected = True
+        #bpy.context.scene.update()
 
     def addUnit(self,unit):
         if unit.parent == None:
