@@ -23,18 +23,12 @@ class BlenderRobot:
 
     def addRoot(self,unit):
         print("Add root " + unit.name)
-        #bpy.data.armatures.new(unit.name)
         bpy.ops.object.armature_add(enter_editmode=True)
-        #self.armature = bpy.data.armatures[0]
-        print(bpy.data.objects)
         self.robot = bpy.data.objects['Armature']
-        print(bpy.data.objects)
         self.armature = self.robot.data
-        #self.robot = bpy.data.objects.new("robot", self.armature)
+        self.armature.edit_bones.remove(self.armature.edit_bones[0])
         self.robot.location.x = 0;
         self.robot.location.y = 0;
-        #bpy.context.scene.objects.link(self.robot)
-        #bpy.context.scene.update()
         bpy.context.scene.update()
         
     def addJoint(self,unit,parent):
@@ -54,9 +48,7 @@ class BlenderRobot:
         except:
             parent_bone = None
             bone.tail.y = 1
-        #bpy.context.scene.objects.active = bpy.context.scene.objects['robot']
-        #bpy.data.objects['robot'].selected = True
-        #bpy.context.scene.update()
+        bpy.context.scene.update()
 
     def addUnit(self,unit):
         if unit.parent == None:

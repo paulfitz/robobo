@@ -25,6 +25,7 @@ while (<>) {
 	$units{$nesting} = $unit;
 	$parents{$nesting} = $parent;
 	$unit_chains{$nesting} = $unit_chain;
+	$parent = $unit;
 	$nesting++;
     } elsif ($_ =~ /}/) {
 	$nesting--;
@@ -44,7 +45,6 @@ while (<>) {
 	    print "unit_$unit.configured()\n";
 	    $configured{$unit} = 1;
 	}
-	$parent = $unit;
 	my $end = ($1 eq "END");
 	my $root = ($1 eq "ROOT");
 	$unit = $2;
