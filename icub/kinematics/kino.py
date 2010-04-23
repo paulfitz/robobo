@@ -9,15 +9,17 @@ class Unit:
         self.is_configured = False
         self.is_completed = False
         self.is_root = (parent==None)
+        self.rpy_xyz = None
+        self.dh = None
 
     def set_base(self,data):
         print("SET BASE HERE")
 
     def set_rpy_xyz(self,data):
-        print("SET RPY_XYZ HERE")
+        self.rpy_xyz = data
 
     def set_dh(self,data):
-        print("SET DH HERE")
+        self.dh = data
 
     def set_terminal(self):
         pass
