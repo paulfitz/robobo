@@ -19,3 +19,7 @@ manual: blender.py
 show:
 	$(BLENDER) -w /tmp/test.blend
 
+
+play:
+	$(BLENDER) -w play.blend -P play.py
+

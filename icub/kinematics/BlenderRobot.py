@@ -40,20 +40,15 @@ class BlenderRobot:
         try:
             parent_bone = self.armature.edit_bones[parent.name]
             print("Parent found")
-            #bone.length = 1
-            #bone.head = parent_bone.tail
-            #bone.tail = parent_bone.tail
-            #bone.tail.y += 1
             bone.parent = parent_bone
-            #bone.align_orientation(parent_bone)
         except:
             parent_bone = None
-            #bone.tail.y = 1
         bone.head = [0, 0, 0]
         bone.tail = [1, 0, 0]
         bone.hinge = True
-        if bone.parent:
-            bone.transform(bone.parent.matrix)
+
+        # Doing some testing, coordinates always seem to be global
+        # (at least, not relative to parent bones)
 
         unit.rpy_xyz = None
         #unit.dh = None
@@ -68,12 +63,13 @@ class BlenderRobot:
             z = unit.rpy_xyz[6]
             rotmin = unit.rpy_xyz[7]
             rotmax = unit.rpy_xyz[8]
-            bone.tail.x = x*self.scale
-            bone.tail.y = y*self.scale
-            bone.tail.z = z*self.scale
-            rot = mathutils.Euler(yaw,pitch,roll)
-            rot.order = 'XYZ'
-            bone.transform(rot.to_matrix())
+            t = mathutils.TranslationMatrix(mathutils.Vector(x*self.scale,
+                                                             y*self.scale,
+                                                             z*self.scale))
+            t = mathutils.RotationMatrix(yaw,4,mathutils.Vector(0,0,1))*t
+            t = mathutils.RotationMatrix(pitch,4,mathutils.Vector(0,1,0))*t
+            t = mathutils.RotationMatrix(roll,4,mathutils.Vector(1,0,0))*t
+            unit.transform = t
         if unit.dh!=None:
             enc = unit.dh[0]
             a = unit.dh[1]
@@ -82,17 +78,26 @@ class BlenderRobot:
             theta0 = unit.dh[4]
             thetamin = unit.dh[5]
             thetamax = unit.dh[6]
-            bone.transform(mathutils.Euler(0,0,theta0).to_matrix())
-            bone.tail.x = a*self.scale
-            bone.tail.y = 0
-            bone.tail.z = d*self.scale
-            bone.transform(mathutils.Euler(alpha,0,0).to_matrix())
-        if bone.parent:
-            bone.translate(bone.parent.tail) 
-            bone.connected = True
+            t = mathutils.RotationMatrix(theta0,4,mathutils.Vector(0,0,1))
+            t = mathutils.TranslationMatrix(mathutils.Vector(a*self.scale,
+                                                             0.0,
+                                                             d*self.scale))*t
+            t = mathutils.RotationMatrix(alpha,4,mathutils.Vector(1,0,0))*t
+            unit.transform = t
+        #if bone.parent:
+        #    bone.translate(bone.parent.tail) 
+        #    bone.connected = True
         #bpy.context.scene.update()
+        tparent = mathutils.TranslationMatrix(mathutils.Vector(0,0,0))
+        at = parent
+        while at!=None:
+            tparent = at.transform*tparent
+            at = at.parent
+        bone.head = tparent.translation_part()
+        bone.tail = unit.transform.translation_part()
 
     def addUnit(self,unit):
+        unit.transform = mathutils.TranslationMatrix(mathutils.Vector(0,0,0))
         if unit.parent == None:
             self.addRoot(unit)
             return
