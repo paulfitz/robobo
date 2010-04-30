@@ -1,3 +1,6 @@
+to_rad = 3.14159265/180.0
+ident = mathutils.RotationMatrix(0,4,mathutils.Vector(1,0,0))
+
 class BlenderRobot:
     def __init__(self):
         self.scale = 0.01
@@ -28,6 +31,7 @@ class BlenderRobot:
         bpy.ops.object.armature_add(enter_editmode=True)
         self.robot = bpy.data.objects['Armature']
         self.armature = self.robot.data
+        self.armature.drawtype = 'STICK'
         self.armature.edit_bones.remove(self.armature.edit_bones[0])
         self.robot.location.x = 0;
         self.robot.location.y = 0;
@@ -50,9 +54,6 @@ class BlenderRobot:
         # Doing some testing, coordinates always seem to be global
         # (at least, not relative to parent bones)
 
-        unit.rpy_xyz = None
-        #unit.dh = None
-        to_rad = 3.14159265/180.0
         if unit.rpy_xyz!=None:
             enc = unit.rpy_xyz[0]
             yaw = unit.rpy_xyz[1]*to_rad
@@ -61,43 +62,64 @@ class BlenderRobot:
             x = unit.rpy_xyz[4]
             y = unit.rpy_xyz[5]
             z = unit.rpy_xyz[6]
-            rotmin = unit.rpy_xyz[7]
-            rotmax = unit.rpy_xyz[8]
+            rotmin = unit.rpy_xyz[7]*to_rad
+            rotmax = unit.rpy_xyz[8]*to_rad
+            unit.prerot = ident
             t = mathutils.TranslationMatrix(mathutils.Vector(x*self.scale,
                                                              y*self.scale,
                                                              z*self.scale))
-            t = mathutils.RotationMatrix(yaw,4,mathutils.Vector(0,0,1))*t
+            unit.shift = t
+            t = mathutils.RotationMatrix(yaw,4,mathutils.Vector(0,0,1))
             t = mathutils.RotationMatrix(pitch,4,mathutils.Vector(0,1,0))*t
             t = mathutils.RotationMatrix(roll,4,mathutils.Vector(1,0,0))*t
-            unit.transform = t
+            unit.postrot = t
         if unit.dh!=None:
             enc = unit.dh[0]
             a = unit.dh[1]
             d = unit.dh[2]
-            alpha = unit.dh[3]
-            theta0 = unit.dh[4]
-            thetamin = unit.dh[5]
-            thetamax = unit.dh[6]
+            alpha = unit.dh[3]*to_rad
+            theta0 = unit.dh[4]*to_rad
+            thetamin = unit.dh[5]*to_rad
+            thetamax = unit.dh[6]*to_rad
             t = mathutils.RotationMatrix(theta0,4,mathutils.Vector(0,0,1))
+            unit.prerot = t
             t = mathutils.TranslationMatrix(mathutils.Vector(a*self.scale,
                                                              0.0,
-                                                             d*self.scale))*t
-            t = mathutils.RotationMatrix(alpha,4,mathutils.Vector(1,0,0))*t
-            unit.transform = t
+                                                             d*self.scale))
+            unit.shift = t
+            t = mathutils.RotationMatrix(alpha,4,mathutils.Vector(1,0,0))
+            unit.postrot = t
         #if bone.parent:
         #    bone.translate(bone.parent.tail) 
         #    bone.connected = True
         #bpy.context.scene.update()
-        tparent = mathutils.TranslationMatrix(mathutils.Vector(0,0,0))
-        at = parent
-        while at!=None:
-            tparent = at.transform*tparent
-            at = at.parent
-        bone.head = tparent.translation_part()
-        bone.tail = unit.transform.translation_part()
+        if parent!=None:
+            t = parent.transform
+        else:
+            t = ident
+        base = t
+        #dt = mathutils.TranslationMatrix(t.translation_part())
+        #dt_neg = mathutils.TranslationMatrix(t.translation_part().negate())
+        #t = dt*unit.prerot*dt_neg*t
+        t = unit.prerot*t
+        t = unit.shift*t
+        #dt = mathutils.TranslationMatrix(t.translation_part())
+        #dt_neg = mathutils.TranslationMatrix(t.translation_part().negate())
+        #t = dt*unit.postrot*dt_neg*t
+        t = unit.postrot*t
+        unit.transform = t
+        bone.head = base*mathutils.Vector(0,0,0)
+        bone.tail = unit.transform*mathutils.Vector(0,0,0)
+        print("  " + str(bone.head))
+        if (bone.tail-bone.head).length<0.01:
+            bone.tail.x = bone.tail.x + 0.001
+        bone.connected = True
 
     def addUnit(self,unit):
-        unit.transform = mathutils.TranslationMatrix(mathutils.Vector(0,0,0))
+        unit.transform = ident
+        unit.prerot = ident
+        unit.shift = ident
+        unit.postrot = ident
         if unit.parent == None:
             self.addRoot(unit)
             return
