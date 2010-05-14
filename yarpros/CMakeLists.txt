@@ -15,5 +15,8 @@ include_directories(${ROS_ROOT}/core/roslib/include)
 include_directories(${ROS_ROOT}/core/roscpp/include)
 link_directories(${ROS_ROOT}/core/roscpp/lib)
 
-add_executable(rosyarp_transport rosyarp_transport.cpp)
-target_link_libraries(rosyarp_transport ros ${Boost_LIBRARIES})
+add_executable(transport_test transport_test.cpp)
+target_link_libraries(transport_test ros ${Boost_LIBRARIES})
+
+add_subdirectory(tutorials)
+
