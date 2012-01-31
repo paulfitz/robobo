@@ -14,6 +14,7 @@ find_package(FLEX REQUIRED)
 
 include_directories(${THRIFT_ROOT})
 include_directories(${THRIFT_ROOT}/src)
+include_directories(${THRIFT_ROOT}/src/generate)
 BISON_TARGET(tcc_parser ${THRIFT_ROOT}/src/thrifty.yy ${CMAKE_CURRENT_BINARY_DIR}/parser.cc)
 FLEX_TARGET(tcc_scanner ${THRIFT_ROOT}/src/thriftl.ll  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc)
 ADD_FLEX_BISON_DEPENDENCY(tcc_scanner tcc_parser)
@@ -22,5 +23,7 @@ ADD_FLEX_BISON_DEPENDENCY(tcc_scanner tcc_parser)
 include_directories(${CMAKE_SOURCE_DIR})
 add_executable(tcc ${folder_source} ${folder_source2} 
   ${CMAKE_CURRENT_BINARY_DIR}/parser.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc)
+  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc
+  t_yarp_generator.cc
+  )
 
