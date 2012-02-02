@@ -13,7 +13,8 @@ class Unit:
         self.dh = None
 
     def set_base(self,data):
-        print("SET BASE HERE")
+        #print("SET BASE HERE")
+        return
 
     def set_rpy_xyz(self,data):
         self.rpy_xyz = data

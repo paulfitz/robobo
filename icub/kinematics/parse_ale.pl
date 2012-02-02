@@ -69,7 +69,7 @@ while (<>) {
 	my @lst = split(/\s+/,$1);
 	print "unit_$unit.set_dh([" . join(',',@lst) . "])\n";
     } elsif ($_ =~ /^(\w+)/) {
-	print "# DO NOT KNOW WHAT TO DO WITH $1\n";
+	print "# DO NOT KNOW WHAT TO DO WITH $_\n";
     } else {
 	print "# $_\n";
     }

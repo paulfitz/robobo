@@ -14,6 +14,9 @@ endif ()
 include_directories(${ROS_ROOT}/core/roslib/include)
 include_directories(${ROS_ROOT}/core/roscpp/include)
 link_directories(${ROS_ROOT}/core/roscpp/lib)
+link_directories(${ROS_ROOT}/3rdparty/xmlrpcpp/lib)
+
+# link_libraries(log4cxx XmlRpc)
 
 add_executable(transport_test transport_test.cpp)
 target_link_libraries(transport_test ros ${Boost_LIBRARIES})
