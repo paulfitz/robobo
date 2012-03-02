@@ -3,27 +3,40 @@ cmake_minimum_required(VERSION 2.6)
 project(thrift_compiler)
 
 
-# thrift/compiler/cpp
-set(THRIFT_ROOT "" CACHE PATH "Location of thrift compiler source") 
+# should be: ..../thrift/compiler/cpp
+find_path(THRIFT_ROOT compiler/cpp/thrifty.cc DOC "Location of Thrift source code repository")
 
-file(GLOB_RECURSE folder_source ${THRIFT_ROOT}/src/*.cc)
-file(GLOB_RECURSE folder_source2 ${THRIFT_ROOT}/src/*.c)
+if (THRIFT_ROOT)
+  set(THRIFT_COMPILER_SOURCE ${THRIFT_ROOT}/compiler/cpp)
+endif ()
+
+option(WITH_INSERTS "Add extra generators" ON)
+
+file(GLOB_RECURSE thrift_source_cc ${THRIFT_COMPILER_SOURCE}/src/*.cc)
+file(GLOB_RECURSE thrift_source_c ${THRIFT_COMPILER_SOURCE}/src/*.c)
+if (WITH_INSERTS)
+  file(GLOB_RECURSE insert_source_cc inserts/*.cc)
+endif()
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
-include_directories(${THRIFT_ROOT})
-include_directories(${THRIFT_ROOT}/src)
-include_directories(${THRIFT_ROOT}/src/generate)
-BISON_TARGET(tcc_parser ${THRIFT_ROOT}/src/thrifty.yy ${CMAKE_CURRENT_BINARY_DIR}/parser.cc)
-FLEX_TARGET(tcc_scanner ${THRIFT_ROOT}/src/thriftl.ll  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc)
+include_directories(${THRIFT_COMPILER_SOURCE})
+include_directories(${THRIFT_COMPILER_SOURCE}/src)
+include_directories(${THRIFT_COMPILER_SOURCE}/src/generate)
+BISON_TARGET(tcc_parser ${THRIFT_COMPILER_SOURCE}/src/thrifty.yy ${CMAKE_CURRENT_BINARY_DIR}/parser.cc)
+FLEX_TARGET(tcc_scanner ${THRIFT_COMPILER_SOURCE}/src/thriftl.ll  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc)
 ADD_FLEX_BISON_DEPENDENCY(tcc_scanner tcc_parser)
 
-
 include_directories(${CMAKE_SOURCE_DIR})
-add_executable(tcc ${folder_source} ${folder_source2} 
-  ${CMAKE_CURRENT_BINARY_DIR}/parser.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc
-  t_yarp_generator.cc
-  )
-
+if (THRIFT_ROOT)
+  add_executable(tcc 
+    ${thrift_source_cc}
+    ${thrift_source_c}
+    ${CMAKE_CURRENT_BINARY_DIR}/parser.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc
+    ${insert_source_cc}
+    )
+else ()
+  message(FATAL_ERROR "Please supply location of Thrift source code (THRIFT_ROOT)")
+endif ()
