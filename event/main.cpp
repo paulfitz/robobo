@@ -1,11 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <yarp/os/all.h>
 #include <yarp/sig/all.h>
 
+#include <vector>
+
+#define USE_PORT 1
+
 using namespace yarp::os;
 using namespace yarp::sig;
 using namespace yarp::sig;
+using namespace std;
+
+class Point {
+public:
+  int x, y;
+};
 
 class Flicker {
 private:
@@ -13,6 +24,8 @@ private:
   int h;
   ImageOf<PixelFloat> accum;
   double last_out_time;
+  BufferedPort<ImageOf<PixelRgb> > port;
+  
 public:
   Flicker(int w, int h) {
     this->w = w;
@@ -20,6 +33,9 @@ public:
     accum.resize(w,h);
     accum.zero();
     last_out_time = -100;
+    if (USE_PORT) {
+      port.open("/flicker");
+    }
   }
 
   void apply(double t, int x, int y, bool polarity, bool cam);
@@ -28,8 +44,22 @@ public:
 void Flicker::apply(double t, int x, int y, bool polarity, bool cam) {
   if (cam!=0) return;  // cam 1 seems dodgy?
   accum(x,y)++;
-  if (t>last_out_time+0.05) {
+  if (t>last_out_time+0.0002) {
     last_out_time = t;
+    ImageOf<PixelRgb> view;
+    view.resize(accum);
+    view.zero();
+    IMGFOR(view,x,y) {
+      int v = int(accum(x,y)+0.5);
+      if (v>0) {
+	double theta = v;
+	double dx = cos(theta);
+	double dy = sin(theta);
+	view(x,y) = PixelRgb((int)(dx*120)+128,(int)(dy*120)+128,
+			     (int)((dx+dy)*62)+128);
+      }
+    }
+    /*
     ImageOf<PixelFloat> norm;
     norm = accum;
     double top = 0.001;
@@ -38,19 +68,30 @@ void Flicker::apply(double t, int x, int y, bool polarity, bool cam) {
     }
     IMGFOR(norm,x,y) {
       norm(x,y) *= (255.0/top);
-      accum(x,y) *= 0.9;
+      accum(x,y) *= 0.99;
     }
-    ImageOf<PixelRgb> view;
     view.copy(norm);
-    static int ct = 0;
-    char buf[256];
-    sprintf(buf,"view%06d.ppm",ct);
-    ct++;
-    file::write(view,buf);
+    */
+    if (!USE_PORT) {
+      static int ct = 0;
+      char buf[256];
+      sprintf(buf,"view%06d.ppm",ct);
+      ct++;
+      file::write(view,buf);
+      if (ct>640) exit(0);
+    } else {
+      static double now = 0;
+      Time::delay((t-now)*500);
+      now = t;
+      port.prepare() = view;
+      port.write();
+    }
   }
 }
 
 int main(int argc, char *argv[]) {
+  Network yarp;
+
   if (argc!=2) return 1;
   const char *fname = argv[1];
   
