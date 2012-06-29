@@ -8,12 +8,62 @@
 
 #include <vector>
 
+#include "Pattern.h"
+
 #define USE_PORT 1
 #define SHOW_INPUT 0
+#define USE_LOOKUP 1
 
 using namespace yarp::os;
 using namespace yarp::sig;
 using namespace std;
+
+
+Pattern evaluate(yarp::sig::ImageOf<yarp::sig::PixelFloat>& stamp,
+		 int cx, int cy) {
+  cx--;
+  cy--;
+
+  Pattern p;
+
+  int order[9] = {0,1,2,3,4,5,6,7,8};
+  double vals[9];
+  int dx[9], dy[9];
+  int at = 0;
+  for (int y=0; y<3; y++) {
+    for (int x=0; x<3; x++) {
+      vals[at] = stamp(x+cx,y+cy);
+      dx[at] = x-1;
+      dy[at] = y-1;
+      at++;
+    }
+  }
+  bool more = true;
+  for (int i=1; i<9;i++) {
+    double item = vals[i];
+    int oitem = order[i];
+    int ihole = i;
+    while (ihole>0 && vals[ihole-1]>item) {
+      vals[ihole] = vals[ihole-1];
+      order[ihole] = order[ihole-1];
+      ihole--;
+    }
+    vals[ihole] = item;
+    order[ihole] = oitem;
+  }
+
+  p.x = -dx[order[0]];
+  p.y = -dy[order[0]];
+  p.mag = 1;
+
+  if (fabs(vals[8]-vals[0])<0.001) {
+    p.mag = 0;
+  }
+
+
+  return p;
+}
+
 
 class Flicker {
 private:
@@ -25,6 +75,8 @@ private:
   ImageOf<PixelFloat> accum_xx_sum,accum_yy_sum,accum_mag_sum;
   double last_out_time;
   BufferedPort<ImageOf<PixelRgb> > arrows;
+public:
+  Patterns patterns;
   
 public:
   Flicker(int w, int h) {
@@ -73,22 +125,49 @@ void Flicker::apply(double t, int x, int y, bool polarity, bool cam) {
     accum_xx.resize(tick);
     accum_yy.resize(tick);
     accum_mag.resize(tick);
+
     IMGFOR(tick,x,y) {
       double xx = 0, yy = 0, mag = 0;
       double ref = tick(x,y);
       if (x>=1 && y>=1 && x<ww-1 && y<hh-1) {
-	for (int qx=-1; qx<=1; qx++) {
-	  for (int qy=-1; qy<=1; qy++) {
-	    if (qx==0&&qy==0) continue;
-	    double cmp = tick.safePixel(x+qx,y+qy);
-	    if (cmp<0) continue;
-	    double m = cmp-ref;
-	    double fresh = t-ref;
-	    if (t-cmp>fresh) fresh = t-cmp;
-	    fresh = 0.05/(0.05+fresh);
-	    xx += qx*m*fresh;
-	    yy += qy*m*fresh;
-	    mag += fabs(m);
+	if (patterns.isValid()) {
+	  Pattern p = patterns.evaluate(tick,x,y);
+	  //Pattern p = evaluate(tick,x,y);
+	  if (p.mag>0.001) {
+	    xx = p.x;
+	    yy = p.y;
+	    double m2 = sqrt(xx*xx+yy*yy);
+	    if (m2>0.0000001) {
+	      xx /= m2;
+	      yy /= m2;
+	    }
+	    /*
+	    m2 = p.mag/m2;
+	    if (m2<=1) m2 = 1;
+	    if (m2>0.0000001) {
+	      xx /= m2;
+	      yy /= m2;
+	    }
+	    */
+	    mag = 1;
+	    //mag = 3;
+	    //xx *= mag;
+	    //yy *= mag;
+	  }
+	} else {
+	  for (int qx=-1; qx<=1; qx++) {
+	    for (int qy=-1; qy<=1; qy++) {
+	      if (qx==0&&qy==0) continue;
+	      double cmp = tick.safePixel(x+qx,y+qy);
+	      if (cmp<0) continue;
+	      double m = cmp-ref;
+	      double fresh = t-ref;
+	      if (t-cmp>fresh) fresh = t-cmp;
+	      fresh = 0.05/(0.05+fresh);
+	      xx += qx*m*fresh;
+	      yy += qy*m*fresh;
+	      mag += fabs(m);
+	    }
 	  }
 	}
       }
@@ -98,7 +177,7 @@ void Flicker::apply(double t, int x, int y, bool polarity, bool cam) {
     }
 
     IntegralImage ii;
-    int dd = 2;
+    int dd = 1;
     ii.GetSum(accum_xx,accum_xx_ii,accum_xx_sum,dd);
     ii.GetSum(accum_yy,accum_yy_ii,accum_yy_sum,dd);
     ii.GetSum(accum_mag,accum_mag_ii,accum_mag_sum,dd);
@@ -162,6 +241,14 @@ int main(int argc, char *argv[]) {
   if (!fin) return 1;
 
   Flicker flick(128,128);
+
+#if USE_LOOKUP
+  if (!flick.patterns.load("ref2.txt")) {
+    Time::delay(1);
+    fprintf(stderr,"\n*** failed to load reference, continuing in fallback mode\n\n");
+    Time::delay(2);
+  }
+#endif
 
   long int ot = -1;
   long int accum_time = 0;
