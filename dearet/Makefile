@@ -1,5 +1,5 @@
-#SRC = "Test_Message_2p1.txt"
-SRC = "Snip.txt"
+SRC = "Test_Message_2p1.txt"
+#SRC = "Snip.txt"
 
 default:
 	./process.js $(SRC) | tee outcome.txt
