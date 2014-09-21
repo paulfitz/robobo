@@ -73,7 +73,7 @@ m["17756266"] = "planety2";
 m["17756366"] = "planety3";
 m["17757666"] = "planety4";
 m["17756066"] = "planety5";
-m["17756766"] = "planety6";
+m["17756766"] = "planety6_actually_star_55_Cancri_B_maybe";
 
 m["17757676"] = "smallthing1";
 m["02665777"] = "smallthing2_with_gassy_parts";
@@ -81,7 +81,7 @@ m["02665777"] = "smallthing2_with_gassy_parts";
 m["05665765"] = "sixful";
 
 m["04665676"] = "mass?";
-m["17756666"] = "big_thing_with_gassy_parts";
+m["17756666"] = "star_55_Cancri_A_maybe";
 m["04665677"] = "charge?";
 
 m["07666664"] = "neutron";
@@ -127,16 +127,18 @@ m["07647645"] = "CH4";
 m["07647656"] = "C2H6";
 m["07647657"] = "?NSH5?";
 
-m["04665766"] = "thinginess?";
+m["04665766"] = "zing?";
 m["04665674"] = "dist1?";
 m["05665762"] = "dist2?";
 m["05665763"] = "0_to_1_iness?";
 m["05665760"] = "dur1?";
 m["05665761"] = "dur2?";
 
-m["05665776"] = "maybe_relative_to?";
-m["17756466"] = "other_big_thing";
+m["05665776"] = "orbits";
+m["17756466"] = "star_55_Cancri_B_maybe";
 m["17756566"] = "substantial_thing";
+
+m["06656647"] = "unit_zing";
 
 // reference_distance: 1.0154e-34 ? or maybe 4.0510e-35?
 
@@ -149,7 +151,7 @@ m["17756566"] = "substantial_thing";
 // n3 [1].59638 , ^ ( [10] , [34] )       0.183 jup
 // n4 [1].43936 , ^ ( [10] , [34] )       0.165 jup
 // n5 [3].75106 , ^ ( [10] , [35] )       4.300 jup
-// n6ish [1].18800 , ^ ( [10] , [37] )    136.19 jup
+// n6ish [1].18800 , ^ ( [10] , [37] )    136.19 jup <-- 55 Cancri B
 
 // 1.674×10−27 kg  <--- mass of hydrogen atom
 // compare: * ( [7].68150 ) , ^ ( [10] , [-20] ) ) , planck_mass )
