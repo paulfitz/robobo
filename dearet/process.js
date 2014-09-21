@@ -68,18 +68,20 @@ m["06656670"] = "sqrt_hbar_c_over_coulomb_const";
 m["06656646"] = "planck_energy";
 
 // xxxx
-m["17756166"] = "n1";
-m["17756266"] = "n2";
-m["17756366"] = "n3";
-m["17757666"] = "n4";
-m["17756066"] = "n5";
-m["17756766"] = "n6";
+m["17756166"] = "planety1";
+m["17756266"] = "planety2";
+m["17756366"] = "planety3";
+m["17757666"] = "planety4";
+m["17756066"] = "planety5";
+m["17756766"] = "planety6";
 
+m["17757676"] = "smallthing1";
+m["02665777"] = "smallthing2_with_gassy_parts";
 
 m["05665765"] = "sixful";
 
 m["04665676"] = "mass?";
-m["17756666"] = "solar_mass?";
+m["17756666"] = "big_thing_with_gassy_parts";
 m["04665677"] = "charge?";
 
 m["07666664"] = "neutron";
@@ -133,6 +135,30 @@ m["05665760"] = "dur1?";
 m["05665761"] = "dur2?";
 
 m["05665776"] = "maybe_relative_to?";
+m["17756466"] = "other_big_thing";
+m["17756566"] = "substantial_thing";
+
+// reference_distance: 1.0154e-34 ? or maybe 4.0510e-35?
+
+// 2.35500e33 * p
+// ans =    5.1257e+25 kg   maybe mass of "n1"
+//          3.1328e+26 kg   maybe mass of "n4"
+
+// n1 [2].35500 , ^ ( [10] , [33] )       0.027 jup
+// n2 [1].43936 , ^ ( [10] , [34] )       0.165 jup
+// n3 [1].59638 , ^ ( [10] , [34] )       0.183 jup
+// n4 [1].43936 , ^ ( [10] , [34] )       0.165 jup
+// n5 [3].75106 , ^ ( [10] , [35] )       4.300 jup
+// n6ish [1].18800 , ^ ( [10] , [37] )    136.19 jup
+
+// 1.674×10−27 kg  <--- mass of hydrogen atom
+// compare: * ( [7].68150 ) , ^ ( [10] , [-20] ) ) , planck_mass )
+// 1.6719e-27 ... good enough, so planck_mass translation is ok
+// and masses in general may be trustworthy.
+
+// Jupiter mean radius 69911±6 km
+
+// Oh right, the hint said 55 Cnc :-)
 
 // 07646... -- last line
 
