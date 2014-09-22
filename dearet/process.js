@@ -36,10 +36,10 @@ m["06656642"] = "reference_duration";
 m["06656673"] = "reference_distance";
 m["06656676"] = "c_light";
 m["06656645"] = "reference_watt";
-m["12665554"] = "triplet?";
-m["05663370"] = "c1";
-m["04665767"] = "c2";
-m["04665764"] = "c3";
+m["12665554"] = "transmitter_triplet?";
+m["05663370"] = "triplet1_frequency";
+m["04665767"] = "triplet2_power";
+m["04665764"] = "triplet3_time";
 
 
 m["53444476"] = "or";
@@ -57,7 +57,7 @@ m["06656662"] = "mass_proton";
 m["06656660"] = "planck_mass";
 m["06656663"] = "mass_neutron";
 m["06656661"] = "h";
-m["06656677"] = "two_pi_G";
+m["06656677"] = "G";
 
 m["06656674"] = "neg?_elementary_charge";
 m["06656672"] = "electric_constant";
@@ -73,15 +73,15 @@ m["17756266"] = "planety2";
 m["17756366"] = "planety3";
 m["17757666"] = "planety4";
 m["17756066"] = "planety5";
-m["17756766"] = "planety6_actually_star_55_Cancri_B_maybe";
+m["17756766"] = "planety6_actually_star_55_Cancri_B_i_guess";
 
-m["17757676"] = "smallthing1";
-m["02665777"] = "smallthing2_with_gassy_parts";
+m["17757676"] = "moony";
+m["02665777"] = "gassy_parts?";
 
-m["05665765"] = "sixful";
+m["05665765"] = "has_orbiting_things?";
 
 m["04665676"] = "mass?";
-m["17756666"] = "star_55_Cancri_A_maybe";
+m["17756666"] = "star_55_Cancri_A_i_guess";
 m["04665677"] = "charge?";
 
 m["07666664"] = "neutron";
@@ -128,55 +128,32 @@ m["07647656"] = "C2H6";
 m["07647657"] = "?NSH5?";
 
 m["04665766"] = "zing?";
-m["04665674"] = "dist1?";
-m["05665762"] = "dist2?";
+m["04665674"] = "distance_maybe_radius?";
+m["05665762"] = "distance_maybe_orbit?";
 m["05665763"] = "0_to_1_iness?";
 m["05665760"] = "dur1?";
 m["05665761"] = "dur2?";
 
-m["05665776"] = "orbits";
-m["17756466"] = "star_55_Cancri_B_maybe";
-m["17756566"] = "substantial_thing";
+m["05665776"] = "orbits?";
+m["17756466"] = "star_55_Cancri_B_part1";
+m["17756566"] = "star_55_Cancri_B_part2";
 
 m["06656647"] = "unit_zing";
+m["06656644"] = "zong";
 
-// reference_distance: 1.0154e-34 ? or maybe 4.0510e-35?
+// confused about h vs hbar in planck mass, but matching transmitter:
+// reference_distance: 1.616×10^-35 meters
+// reference_duration: 5.391×10^-44 seconds <-- gives 1420MHz transmitter
+// reference_watt: 3.629×10^52 watts        <-- gives 300KW transmitter
 
-// 2.35500e33 * p
-// ans =    5.1257e+25 kg   maybe mass of "n1"
-//          3.1328e+26 kg   maybe mass of "n4"
+// last duration in triplet is increasing
 
-// n1 [2].35500 , ^ ( [10] , [33] )       0.027 jup
-// n2 [1].43936 , ^ ( [10] , [34] )       0.165 jup
-// n3 [1].59638 , ^ ( [10] , [34] )       0.183 jup
-// n4 [1].43936 , ^ ( [10] , [34] )       0.165 jup
-// n5 [3].75106 , ^ ( [10] , [35] )       4.300 jup
-// n6ish [1].18800 , ^ ( [10] , [37] )    136.19 jup <-- 55 Cancri B
-
-// 1.674×10−27 kg  <--- mass of hydrogen atom
-// compare: * ( [7].68150 ) , ^ ( [10] , [-20] ) ) , planck_mass )
-// 1.6719e-27 ... good enough, so planck_mass translation is ok
-// and masses in general may be trustworthy.
-
-// Jupiter mean radius 69911±6 km
-
-// Oh right, the hint said 55 Cnc :-)
-
-// 07646... -- last line
-
-// 07646 6 77 --> 11
-// 07646 6 44 --> 22
-// 07646 7 67 --> 01
-// 07646 6 07 --> 61
-// 07646 2 75 --> 13
-// 07646 4 77 --> 11
-// 07646 6 14 --> 72
-// 07646 4 66 --> 00
-// 07646 6 74 --> 12
-// 07646 7 47 --> 21
-
-// ( sqrt_hbar_c_over_coulomb_const = * ( [11].07062 , elementary_charge ) )
+// (sqrt_hbar_c_over_coulomb_const = * (11.07062, elementary_charge))
 // should be something like 11.7062 no?
+// IFFY (zing? = * (* ([3].66110, ^ ([1], [-29])), unit_zing))
+// IFFY (dist1? = * (* ([4].95730, ^ ([1], [43])), reference_distance))
+// IFFY (triplet3 = * (* ([4].04900, ^ ([1], [6])), reference_duration))
+// / (* ([1], * (G, planck_mass)), ^ (c_light, [2])) what is that [1] doing in there?
 
 var oct = {};
 oct["0"] = 6;
@@ -246,5 +223,12 @@ for (var i=0; i<parts.length; i++) {
 txt = parts.join(" ");
 txt = txt.replace(/\) \(/g,")\n(");
 txt = txt.replace(/ E /g,".");
+
+txt = txt.replace(/\( +/g,"(");
+txt = txt.replace(/ +\)/g,")");
+txt = txt.replace(/ +,/g,",");
+
+txt = txt.replace(/\[/g,"");
+txt = txt.replace(/\]/g,"");
 
 console.log(txt);
