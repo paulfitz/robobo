@@ -31,16 +31,15 @@ m["46666664"] = "[-2]";
 m["76666662"] = "[4]";
 m["76666767"] = "[101]";
 m["46666647"] = "[-21]";
-//m["76664636"]
+
 m["06656642"] = "reference_duration";
 m["06656673"] = "reference_distance";
 m["06656676"] = "c_light";
 m["06656645"] = "reference_watt";
 m["12665554"] = "transmitter_triplet?";
-m["05663370"] = "triplet1_frequency";
-m["04665767"] = "triplet2_power";
-m["04665764"] = "triplet3_time";
-
+m["05663370"] = "frequency?";
+m["04665767"] = "power?";
+m["04665764"] = "age?";
 
 m["53444476"] = "or";
 
@@ -68,12 +67,12 @@ m["06656670"] = "sqrt_hbar_c_over_coulomb_const";
 m["06656646"] = "planck_energy";
 
 // xxxx
-m["17756166"] = "planety1";
-m["17756266"] = "planety2";
-m["17756366"] = "planety3";
-m["17757666"] = "planety4";
-m["17756066"] = "planety5";
-m["17756766"] = "planety6_actually_star_55_Cancri_B_i_guess";
+m["17756166"] = "planety1_55_Cancri_e";
+m["17756266"] = "planety2_55_Cancri_b";
+m["17756366"] = "planety3_55_Cancri_c";
+m["17757666"] = "planety4_55_Cancri_f";
+m["17756066"] = "planety5_55_Cancri_d";
+m["17756766"] = "planety6_star_55_Cancri_B";
 
 m["17757676"] = "moony";
 m["02665777"] = "gassy_parts?";
@@ -81,7 +80,7 @@ m["02665777"] = "gassy_parts?";
 m["05665765"] = "has_orbiting_things?";
 
 m["04665676"] = "mass?";
-m["17756666"] = "star_55_Cancri_A_i_guess";
+m["17756666"] = "star_55_Cancri_A";
 m["04665677"] = "charge?";
 
 m["07666664"] = "neutron";
@@ -128,11 +127,11 @@ m["07647656"] = "C2H6";
 m["07647657"] = "?NSH5?";
 
 m["04665766"] = "zing?";
-m["04665674"] = "distance_maybe_radius?";
-m["05665762"] = "distance_maybe_orbit?";
+m["04665674"] = "radius?";
+m["05665762"] = "mean_orbital_radius?";
 m["05665763"] = "0_to_1_iness?";
-m["05665760"] = "dur1?";
-m["05665761"] = "dur2?";
+m["05665760"] = "orbital_period?";
+m["05665761"] = "length_of_day_maybe?";
 
 m["05665776"] = "orbits?";
 m["17756466"] = "star_55_Cancri_B_part1";
@@ -231,4 +230,5 @@ txt = txt.replace(/ +,/g,",");
 txt = txt.replace(/\[/g,"");
 txt = txt.replace(/\]/g,"");
 
+txt = txt.replace(/\* \(([0-9]+\.[0-9]+), \^ \(10, ([-0-9]+)\)\)/g,"$1e$2");
 console.log(txt);
