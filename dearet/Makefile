@@ -9,5 +9,8 @@ default:
 	sed -i "s/^.moony_triplet.)//" progress.scm
 	sed -i "s/^).*//" progress.scm
 
+notes:
+	./notes.js | tee notes.txt
+
 freq:
 	sed "s/ /\n/g" < $(SRC) | sort | uniq -c | sort -n | head --lines=-1
