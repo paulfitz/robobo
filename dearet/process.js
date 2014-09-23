@@ -32,10 +32,6 @@ m["76666662"] = "[4]";
 m["76666767"] = "[101]";
 m["46666647"] = "[-21]";
 
-m["06656642"] = "reference_duration";
-m["06656673"] = "reference_distance";
-m["06656676"] = "c_light";
-m["06656645"] = "reference_watt";
 m["12665554"] = "transmitter_triplet?";
 m["05663370"] = "frequency?";
 m["04665767"] = "power?";
@@ -50,23 +46,24 @@ m["30230000"] = "c";
 m["06656667"] = "electron2proton";
 m["06656666"] = "fine_structure";
 m["06656664"] = "alpha_G";
-
 m["06656665"] = "mass_electron";
 m["06656662"] = "mass_proton";
 m["06656660"] = "planck_mass";
 m["06656663"] = "mass_neutron";
 m["06656661"] = "h";
 m["06656677"] = "G";
-
-m["06656674"] = "neg?_elementary_charge";
+m["06656674"] = "neg_elementary_charge";
 m["06656672"] = "electric_constant";
 m["06656675"] = "hbar";
-
 m["06656670"] = "sqrt_hbar_c_over_coulomb_const";
-
+m["06656673"] = "reference_distance";
+m["06656676"] = "c_light";
 m["06656646"] = "planck_energy";
+m["06656647"] = "planck_temperature";
+m["06656644"] = "boltzmann_constant";
+m["06656642"] = "reference_duration";
+m["06656645"] = "reference_watt";
 
-// xxxx
 m["17756166"] = "planety1_55_Cancri_e";
 m["17756266"] = "planety2_55_Cancri_b";
 m["17756366"] = "planety3_55_Cancri_c";
@@ -104,13 +101,11 @@ m["07646744"] = "neon_21";
 m["07646745"] = "neon_22";
 m["07646742"] = "sodium_23";
 m["07646726"] = "magnesium_24";
+m["07646466"] = "silicon_28";
 m["07646477"] = "sulpher_32";
 m["07646464"] = "argon_40";
 m["07646275"] = "iron_56";
-//m[""] = "/";
-//m[""] = "/";
-//m[""] = "/";
-//m[""] = "/";
+m["04665654"] = "half_life?";
 
 m["07647667"] = "H2";
 m["07647664"] = "H2O";
@@ -126,7 +121,7 @@ m["07647645"] = "CH4";
 m["07647656"] = "C2H6";
 m["07647657"] = "?NSH5?";
 
-m["04665766"] = "zing?";
+m["04665766"] = "temperature?";
 m["04665674"] = "radius?";
 m["05665762"] = "mean_orbital_radius?";
 m["05665763"] = "0_to_1_iness?";
@@ -137,8 +132,6 @@ m["05665776"] = "orbits?";
 m["17756466"] = "star_55_Cancri_B_part1";
 m["17756566"] = "star_55_Cancri_B_part2";
 
-m["06656647"] = "unit_zing";
-m["06656644"] = "zong";
 
 // confused about h vs hbar in planck mass, but matching transmitter:
 // reference_distance: 1.616×10^-35 meters

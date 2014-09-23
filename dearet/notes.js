@@ -99,3 +99,12 @@ for (var i=0; i<ticks.length; i++) {
 
 var star_age = 4.04900e60;
 console.log("star age " + star_age*reference_duration/(60*60*24*365.2525*1e9) + " billion years");
+
+var half_life = 3.35398e54*reference_duration;
+console.log("half life " + half_life/(60*60*24*365.2525) + " years");
+
+var planck_temperature = 1.41683e32;
+console.log("temperature " + ((3.66110e-29)*planck_temperature) + " K");
+
+var power = 6.66583e-27;
+console.log("power " + (power*reference_watt) + " W");
